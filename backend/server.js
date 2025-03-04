@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 // MongoDB Connection (Using MongoDB container name as hostname)
-const MONGO_URI = "mongodb://mongo:27017/taskDB";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://mongo:27017/taskDB";
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,

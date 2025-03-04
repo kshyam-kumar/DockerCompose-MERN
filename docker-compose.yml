@@ -4,6 +4,9 @@ services:
   mongo:
     image: mongo
     container_name: mongo_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - taskmanager
 
@@ -15,7 +18,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://mongo:27017/taskdb  # Use service name
+      - MONGO_URI=mongodb://root:example@mongo:27017/taskDB?authSource=admin  
     networks:
       - taskmanager
 
@@ -26,9 +29,6 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://taskmanager_backend:5000  # Correct API URL
     stdin_open: true
     tty: true
     networks:

@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo_db
+    networks:
+      - taskmanager
+
+  backend:
+    build: ./backend
+    container_name: taskmanager_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/taskdb  # Use service name
+    networks:
+      - taskmanager
+
+  frontend:
+    build: ./testapp
+    container_name: taskmanager_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://taskmanager_backend:5000  # Correct API URL
+    stdin_open: true
+    tty: true
+    networks:
+      - taskmanager
+
+networks:
+  taskmanager:
+    driver: bridge
